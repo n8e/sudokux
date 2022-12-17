@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import { inputValue } from '../actions/grid';
 
 const pallet = {
@@ -66,7 +66,7 @@ const Box = React.createClass({
 				{
 					isSolved ?
 					(
-						<ReactCSSTransitionGroup
+						<CSSTransition
 							transitionName='solved'
 							transitionAppear={true}
 							transitionEnterTimeout={200}
@@ -74,7 +74,7 @@ const Box = React.createClass({
 							transitionAppearTimeout={200}
 						>
 							{input}
-						</ReactCSSTransitionGroup>
+						</CSSTransition>
 					) :
 					input
 				}
