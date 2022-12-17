@@ -1,26 +1,38 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-	devtool: 'eval',
-	entry: [
-		'webpack-dev-server/client?http://localhost:3000',
-		'webpack/hot/only-dev-server',
-		'./src/index'
-	],
+	mode: "development",
+	entry: "/src/index.js", // main js
 	output: {
-		path: path.join(__dirname, 'dist'),
-		filename: 'bundle.js',
-		publicPath: '/static/'
+		path: path.resolve(__dirname, "dist"), // output folder
+		publicPath: '/'
+	},
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				use: {
+					loader: "babel-loader",
+					options: {
+						presets: ["@babel/preset-env", "@babel/preset-react"],
+					}
+				},
+				include: path.join(__dirname, 'src')
+			},
+			{
+				test: /\.css$/,
+				use: [
+					"style-loader",
+					"css-loader", // for styles
+				],
+			},
+		]
 	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin()
-	],
-	module: {
-		loaders: [{
-			test: /\.js$/,
-			loaders: ['react-hot', 'babel'],
-			include: path.join(__dirname, 'src')
-		}]
-	}
+		new HtmlWebpackPlugin({
+			template: "./index.html", // base html
+		}),
+	]
 };
