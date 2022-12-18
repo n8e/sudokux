@@ -1,25 +1,25 @@
-import { cloneDeep, flatten, range, contains } from 'lodash';
+import { cloneDeep, flatten, range } from 'lodash';
 
 const VALUES = range(1, 10);
 const DIM = range(0, 9);
 const ZERO = 0;
 
 const getRow = (grid, rowNum) => {
-	if (!contains(DIM, rowNum)) {
+	if (!DIM.includes(rowNum)) {
 		throw new Error('rowNum not in range');
 	}
 	return grid[rowNum];
 }
 
 const getCol = (grid, colNum) => {
-	if (!contains(DIM, colNum)) {
+	if (!DIM.includes(colNum)) {
 		throw new Error('colNum not in range');
 	}
 	return grid.map((row) => row[colNum]);
 }
 
 const getSquare = (grid, rowNum, colNum) => {
-	if (!contains(DIM, rowNum) || !contains(DIM, colNum)) {
+	if (!DIM.includes(rowNum) || !DIM.includes(colNum)) {
 		throw new Error('rowNum or colNum are not in range');
 	}
 	let rowStart = rowNum - (rowNum % 3); // uppermost row index of the box
@@ -41,11 +41,11 @@ const getSquare = (grid, rowNum, colNum) => {
 	- unique in its box
 */ 
 const check = (grid, number, rowNum, colNum) => {
-	if (!contains(DIM, rowNum) || !contains(DIM, colNum)) {
+	if (!DIM.includes(rowNum) || !DIM.includes(colNum)) {
 		throw new Error('rowNum or colNum are not in range');
 	}
 
-	if (!contains(VALUES, number)) {
+	if (!VALUES.includes(number)) {
 		throw new Error('number is not in range');
 	}
 
@@ -53,7 +53,7 @@ const check = (grid, number, rowNum, colNum) => {
 	let column = getCol(grid, colNum);
 	let square = getSquare(grid, rowNum, colNum);
 
-	if (!contains(row, number) && !contains(column, number) && !contains(square, number)) {
+	if (!row.includes(number) && !column.includes(number) && !square.includes(number)) {
 		return true;
 	}
 
@@ -76,7 +76,7 @@ const getNext = (rowNum = 0, colNum = 0) => {
 	or else if the grid is not solvable, it will return false
 */
 export const solver = (grid, rowNum = 0, colNum = 0) => {
-	if (contains(DIM, rowNum) < 0 || contains(DIM, colNum) < 0) {
+	if (DIM.includes(rowNum) < 0 || DIM.includes(colNum) < 0) {
 		throw new Error('rowNum or colNum are not in range');
 	}
 	let isLast = (rowNum >= 8 && colNum >= 8);
