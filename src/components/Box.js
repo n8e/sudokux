@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { inputValue } from '../actions/grid';
 
@@ -29,16 +29,14 @@ const getBoxColor = (row, col) => {
 
 /* Box Component */
 
-const Box = React.createClass({
-	componentWillMount() {
-		const {val} = this.props;
-		this.setState({isFixed: val ? true : false});
-	},
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps.val !== this.props.val;
-	},
-	handleChange(e){
-		const {row, col, store} = this.props;
+const Box = ({ val, row, col, store, isSolved }) => {
+	const [isFixed, setIsFixed] = useState(false);
+
+	useEffect(() => {
+		setIsFixed(val ? true: false);
+	}, [val]);
+
+	const handleChange = (e) => {
 		const range = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 		const val = parseInt(e.target.value);
 		const isDeleted = e.target.value === '';
@@ -46,41 +44,38 @@ const Box = React.createClass({
 		if (range.indexOf(val) > -1 || isDeleted) {
 			store.dispatch(inputValue(row, col, isDeleted ? 0 : val));
 		}
-	},
-	render() {
-		const {row, col, val, isSolved} = this.props;
-		const {isFixed} = this.state;
-		const input = (
-			<input
-				ref='input'
-				style={{backgroundColor: getBoxColor(row, col)}}
-				className={isFixed ? 'fixed' : isSolved ? 'result' : ''}
-				disabled={isFixed || isSolved}
-				value={val ? val : ''}
-				onChange={this.handleChange}
-			/>
-		);
-
-		return (
-			<td>
-				{
-					isSolved ?
-					(
-						<CSSTransition
-							transitionName='solved'
-							transitionAppear={true}
-							transitionEnterTimeout={200}
-							transitionLeaveTimeout={200}							
-							transitionAppearTimeout={200}
-						>
-							{input}
-						</CSSTransition>
-					) :
-					input
-				}
-			</td>
-		);
 	}
-});
+
+	const Input = () => (
+		<input
+			style={{backgroundColor: getBoxColor(row, col)}}
+			className={isFixed ? 'fixed' : isSolved ? 'result' : ''}
+			disabled={isFixed || isSolved}
+			value={val ? val : ''}
+			onChange={handleChange}
+		/>
+	);
+
+	return (
+		<td>
+			{
+				isSolved ?
+				(
+					<CSSTransition
+						timeout={200}
+						transitionName='solved'
+						transitionAppear={true}
+						transitionEnterTimeout={200}
+						transitionLeaveTimeout={200}							
+						transitionAppearTimeout={200}
+					>
+						<Input />
+					</CSSTransition>
+				) :
+				<Input />
+			}
+		</td>
+	);
+}
 
 export default Box;
